@@ -7,12 +7,13 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
-var score=0;
 
 var gameState = "onSling";
+var bg = "sprites/bg1.png";
+var score = 0;
 
 function preload() {
-    getBackgroundImage();
+    getBackgroundImg();
 }
 
 function setup(){
@@ -46,15 +47,14 @@ function setup(){
 }
 
 function draw(){
-    if(backgroundImg){
+    if(backgroundImg)
         background(backgroundImg);
-    }else{
-        background(0)
-    }
-    noStroke();
-    textSize(35);
-    fill ("red");
-    text("Score: "+score,width-300,50);
+    
+        noStroke();
+        textSize(35)
+        fill("white")
+        text("Score  " + score, width-300, 50)
+    
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -81,9 +81,9 @@ function draw(){
 }
 
 function mouseDragged(){
-   if (gameState!=="launched"){
+    //if (gameState!=="launched"){
         Matter.Body.setPosition(bird.body, {x: mouseX , y: mouseY});
-    }
+    //}
 }
 
 
@@ -94,17 +94,27 @@ function mouseReleased(){
 
 function keyPressed(){
     if(keyCode === 32){
+        bird.trajectory=[]
+        Matter.Body.setPosition(bird.body, {x: 200 , y: 50});
        slingshot.attach(bird.body);
+
     }
 }
-async function getBackgroundImage(){
-    var responce=await fetch("http://worldtimeapi.org/api/timezone/America/New_York");
-    var js=await responce.json();
-        var dateTime=js.datetime;
-        var hour= dateTime.slice(11,13);
-    if(hour>=06 && hour<=19){
-        bg="sprites/bg.png";
+
+async function getBackgroundImg(){
+    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+    var responseJSON = await response.json();
+
+    var datetime = responseJSON.datetime;
+    var hour = datetime.slice(11,13);
+    
+    if(hour>=0600 && hour<=1900){
+        bg = "sprites/bg.png";
     }
-    else{bg="sprites/bg2.jpg"}
-    backgroundImg=loadImage(bg)
+    else{
+        bg = "sprites/bg2.jpg";
+    }
+
+    backgroundImg = loadImage(bg);
+    console.log(backgroundImg);
 }
